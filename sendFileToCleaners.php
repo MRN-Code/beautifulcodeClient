@@ -79,7 +79,7 @@ if ($newFilename) {
                 "Would you like to delete the lint report(Y/n)?",
                 array('Y', 'n')
             );
-            if ($doDelete = 'Y') {
+            if ($doDelete === 'Y') {
                 exec("rm $newFilename");
                 echo $newLine;
                 echo "Lint report removed";
@@ -106,7 +106,7 @@ if ($newFilename) {
                 'Would you like to replace the file with the formatted version (Y/n)?',
                 array('Y', 'n')
             );
-            if ($doMove == 'Y') {
+            if ($doMove === 'Y') {
                 exec("mv $newFilename $filename");
                 echo $newLine;
                 echo "File replaced with formatted version.";
