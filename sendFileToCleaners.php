@@ -63,6 +63,9 @@ if (!empty($argv[2])) {
 //attempt to get filename to send
 if (!empty($argv[1])) {
     $filename = $argv[1];
+    if ( ! is_readable($filename) ) {
+        throw new Exception('Could not open ' . $filename . '.');
+    }
 } else {
     throw new Exception('No input file given');
     die;
