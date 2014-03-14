@@ -7,6 +7,7 @@ git clone <url to this repo>
 cd beautifulcodeClient
 sudo ./install.sh
 ```
+after installation, you may remove this repo from your machine (all necessary files are copied elsewhere
 
 Updating:
 clone new copy of this repo/gist, or update an existing one and run the following command from inside the beautifulcodeClient dir. 
@@ -14,6 +15,16 @@ This will replace the existing php and shell scripts with the latest versions (a
 ```
 sudo ./install.sh
 ```
+
+Uninstalling:
+clone new copy of this repo, then run uninstall script:
+```
+cd /tmp
+git clone <url to this repo>
+cd beautifulcodeClient
+sudo ./uninstall.sh
+```
+
 
 Usage:
 To format foo.js:
