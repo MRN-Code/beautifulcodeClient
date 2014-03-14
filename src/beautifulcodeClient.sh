@@ -25,3 +25,5 @@ function lintFile() {
         echo "no input filename provided";
     fi
 }
+export lintFile
+export formatFile
