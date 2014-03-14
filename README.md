@@ -5,14 +5,14 @@ Installation:
 cd /tmp
 git clone <url to this repo>
 cd beautifulcodeClient
-sudo make install
+sudo ./install.sh
 ```
 
 Updating:
 clone new copy of this repo/gist, or update an existing one and run the following command from inside the beautifulcodeClient dir. 
 This will replace the existing php and shell scripts with the latest versions (any changes you have made locally will be overwritten!)
 ```
-sudo make install
+sudo ./install.sh
 ```
 
 Usage:
