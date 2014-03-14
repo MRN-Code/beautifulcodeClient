@@ -36,6 +36,15 @@
 */
 
 $newLine = "\n";
+$extToLanguageMap = array(
+    //extension => language
+    'js' => 'js',
+    '_js' => 'js',
+    'php' => 'php',
+    'inc' => 'php',
+    'class.php' => 'php',
+    'conf' => 'php'
+);   
 //attempt to get action
 if (!empty($argv[2])) {
     $action = $argv[2];
@@ -58,14 +67,37 @@ if (!empty($argv[1])) {
     throw new Exception('No input file given');
     die;
 }
+//attempt to get language of filename
+$supportedLanguages = array_unique(array_values($extToLanguageMap));
+if (!empty($argv[3])) {
+    $language = trim($argv[3]);
+    if (!in_array($language, $supportedLanguages)) {
+        throw new Exception(
+            "Unknown language specified: $language.\nSupported extensions: " . 
+                implode(', ', $supportedLanguages)
+        );
+    }
+} else {
+    //get input file type
+    $inputFileExt = pathinfo($filename, PATHINFO_EXTENSION);
+    if ( !(in_array($inputFileExt, $extToLanguageMap) && 
+        $language = $extToLanguageMap[$inputFileExt]) ) {
+        throw new Exception(
+            "Unknown file extension: $inputFileExt.\nSupported extensions: " . 
+                implode(', ', array_unique(array_keys($extToLanguageMap)))
+        );
+    }
+}
+
 //set target url
-$targetURL = "http://lintcoin.mind.unm.edu/beautifulcode/php/$action";
+$targetURL = "http://lintcoin.mind.unm.edu/beautifulcode/$language/$action";
 //this is the extension that will be assigned to the new file
 $responseFilenameExt = ".$action";
 //get username
 echo "running as " . get_current_user();
 echo $newLine;
 //send the file
+print $targetURL;
 $newFilename = sendFile($targetURL, $filename, $responseFilenameExt);
 if ($newFilename) {
     switch ($action) {
@@ -75,11 +107,11 @@ if ($newFilename) {
             echo "The linting report for your file has been written to $newFilename";
             echo $newLine;
             echo $newLine;
-            $doDelete = getInput(
-                "Would you like to delete the lint report(Y/n)?",
+            $keepReport = getInput(
+                "Would you like to keep the lint report(Y/n)?",
                 array('Y', 'n')
             );
-            if ($doDelete = 'Y') {
+            if ($keepReport === 'n') {
                 exec("rm $newFilename");
                 echo $newLine;
                 echo "Lint report removed";
@@ -87,7 +119,7 @@ if ($newFilename) {
             echo $newLine;
             break;
         case 'format':
-            system("vimdiff $newFilename $filename > `tty`");
+            system("vimdiff $filename $newFilename > `tty`");
             echo $newLine;
             echo "Your beautiul new file has been written to $newFilename";
             echo $newLine;
@@ -106,7 +138,7 @@ if ($newFilename) {
                 'Would you like to replace the file with the formatted version (Y/n)?',
                 array('Y', 'n')
             );
-            if ($doMove == 'Y') {
+            if ($doMove === 'Y') {
                 exec("mv $newFilename $filename");
                 echo $newLine;
                 echo "File replaced with formatted version.";
@@ -128,7 +160,7 @@ function sendFile($targetURL, $filename, $responseFilenameExt = ".log")
 {
     $newLine = "\n";
     //setup new filename for writing to the local dir
-    $newFilename = basename($filename) . $responseFilenameExt;
+    $newFilename = realpath($filename) . $responseFilenameExt;
     $tmpFilename = $newFilename;
     $ext = 1;
     //make sure that we do not overwrite anything
@@ -163,13 +195,13 @@ function sendFile($targetURL, $filename, $responseFilenameExt = ".log")
     curl_exec($ch);
     //check for errors
     if (curl_errno($ch)) {
-        unlink($responseFilename);
+        unlink($newFilename);
         throw new Exception("Error during HTTP request: cURL error: " . curl_error($ch));
         die;
     }
     //see if anything was written to the new file
     if (!filesize($newFilename)) {
-        throw new Exception("Error: no data written to $responseFilename");
+        throw new Exception("Error: no data written to $newFilename");
     }
     curl_close($ch);
     echo "Complete";
