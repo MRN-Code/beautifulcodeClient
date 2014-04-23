@@ -2,9 +2,12 @@ Command line tool to send files to the COINS linting and formatting service
 
 Installation:
 ```
-cd /tmp
-git clone <url to this repo>
-cd beautifulcodeClient
+cd ~/ &&
+mkdir temp && 
+cd temp &&
+git clone https://github.com/MRN-Code/beautifulcodeClient.git beautifulcodeClient &&
+cd beautifulcodeClient &&
+chmod +x install.sh &&
 sudo ./install.sh
 ```
 after installation, you may remove this repo from your machine (all necessary files are copied elsewhere
