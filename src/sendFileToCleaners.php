@@ -93,7 +93,7 @@ if (!empty($argv[3])) {
 }
 
 //set target url
-$targetURL = "http://lintcoin.mind.unm.edu/beautifulcode/$language/$action";
+$targetURL = "http://lintcoin.mrn.org/beautifulcode/$language/$action";
 //this is the extension that will be assigned to the new file
 $responseFilenameExt = ".$action";
 //get username
